@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* 3-Layer Design Tokens: Batistela Auto Center */
+    --bg-obsidian: #070709;
+    --bg-carbon: #101115;
+    --bg-graphite: #181A20;
+
+    --accent-red: #E11D2A;
+    --accent-red-glow: rgba(225, 29, 42, 0.28);
+
+    --text-white: #F5F7FA;
+    --text-chrome: #9CA3AF;
+
+    --border-metallic: rgba(255, 255, 255, 0.08);
+  }
+
+  html {
+    background-color: var(--bg-obsidian);
+    color: var(--text-white);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--bg-obsidian);
+    color: var(--text-white);
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* Deslocamento de rolagem para compensar o Header fixo ao navegar por âncoras */
+  section[id] {
+    scroll-margin-top: 5rem;
+  }
+
+  /* Accessibility: Accessible focus rings across interactive elements */
+  :focus-visible {
+    outline: 2px solid var(--accent-red);
+    outline-offset: 3px;
+  }
+
+  /* Optical alignment & tabular figures for numbers */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer utilities {
+  /* Hairline metallic borders */
+  .border-metallic-subtle {
+    border-color: var(--border-metallic);
+  }
+
+  /* Subtle dark surface elevation layers */
+  .surface-carbon {
+    background-color: var(--bg-carbon);
+  }
+
+  .surface-graphite {
+    background-color: var(--bg-graphite);
+  }
+
+  /* Soft red glow effect */
+  .glow-red {
+    box-shadow: 0 0 28px -4px var(--accent-red-glow);
+  }
+}
+
+/* Reduced motion accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
