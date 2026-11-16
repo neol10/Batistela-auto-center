@@ -149,7 +149,8 @@ export const CinematicScroll: React.FC = () => {
       if (seekStartTimeRef.current > 0 && now - seekStartTimeRef.current > SEEK_TIMEOUT_MS) {
         consecutiveSeekTimeoutsRef.current += 1;
         seekStartTimeRef.current = now;
-        if (consecutiveSeekTimeoutsRef.current >= 3) {
+        // No mobile, não ativa modo estático agressivamente por latência transitória de decodificação
+        if (consecutiveSeekTimeoutsRef.current >= 8) {
           setPersistentSeekFailure(true);
           return;
         }
@@ -200,7 +201,20 @@ export const CinematicScroll: React.FC = () => {
       hasRequestedLoadRef.current = true;
       loadStartTimestampRef.current = performance.now();
       videoEl.preload = 'auto';
-      videoEl.load();
+      // Desperta o pipeline de decodificação móvel (iOS Safari / Android Chrome)
+      const playPromise = videoEl.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            videoEl.pause();
+          })
+          .catch(() => {
+            // Em caso de restrição de autoplay, carrega os dados diretamente
+            videoEl.load();
+          });
+      } else {
+        videoEl.load();
+      }
     };
 
     if (typeof IntersectionObserver === 'undefined') {
@@ -508,7 +522,8 @@ export const CinematicScroll: React.FC = () => {
             poster={SITE_CONFIG.media.scrollPoster}
             muted
             playsInline
-            preload="none"
+            {...{ 'webkit-playsinline': 'true' }}
+            preload="metadata"
             disablePictureInPicture
             onLoadedMetadata={handleLoadedMetadata}
             onLoadedData={handleLoadedData}
